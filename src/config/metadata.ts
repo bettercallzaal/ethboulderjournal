@@ -31,4 +31,20 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
+  other: {
+    "fc:frame": JSON.stringify({
+      version: "1",
+      imageUrl: "https://ethboulderjournal.vercel.app/eth-boulder-logo.svg",
+      button: {
+        title: "Explore ZABAL",
+        action: {
+          type: "launch_frame",
+          name: "ZABAL x ETH Boulder",
+          url: "https://ethboulderjournal.vercel.app",
+          splashImageUrl: "https://ethboulderjournal.vercel.app/logo-square.svg",
+          splashBackgroundColor: "#0a0a0f",
+        },
+      },
+    }),
+  },
 };

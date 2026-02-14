@@ -24,6 +24,7 @@ export const siteCopy = {
   author: "bettercallzaal",
   telegramGroupUrl: "https://t.me/+1MwB50azWsE3MTRh",
   twitterUrl: "https://x.com/bettercallzaal",
+  warpcastUrl: "https://warpcast.com/bettercallzaal",
   discordUrl: "https://discord.gg/bonfiresai",
   staticGraph: {
     staticBonfireId: "698b70002849d936f4259848",

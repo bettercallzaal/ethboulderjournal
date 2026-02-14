@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 
+import Image from "next/image";
+
 import { Flame, Loader2, Send, CheckCircle, AlertCircle, Activity } from "lucide-react";
 
 import { Button } from "../ui/button";
+
+const SITE_URL = "https://ethboulderjournal.vercel.app";
 
 interface StackStatus {
   message_count: number;
@@ -14,6 +18,7 @@ interface StackStatus {
 
 export default function AddToMap() {
   const [text, setText] = useState("");
+  const [submittedText, setSubmittedText] = useState("");
   const [userId, setUserId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -39,6 +44,7 @@ export default function AddToMap() {
     if (!text.trim()) return;
     setIsSubmitting(true);
     setFeedback(null);
+    setSubmittedText("");
 
     try {
       const res = await fetch("/api/journal/add", {
@@ -52,6 +58,7 @@ export default function AddToMap() {
 
       if (res.ok) {
         const data = await res.json();
+        setSubmittedText(text.trim());
         setFeedback({
           type: "success",
           message: `Added to the map! (${data.stack_count ?? 0} messages queued)`,
@@ -94,6 +101,18 @@ export default function AddToMap() {
       handleSubmit();
     }
   };
+
+  const shareText = submittedText
+    ? `${submittedText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph`
+    : "";
+
+  const farcasterShareUrl = shareText
+    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL)}`
+    : "";
+
+  const xShareUrl = shareText
+    ? `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(SITE_URL)}`
+    : "";
 
   return (
     <div className="flex flex-col items-center justify-center px-6 lg:px-20 py-12 lg:py-24">
@@ -194,6 +213,31 @@ export default function AddToMap() {
                 <AlertCircle className="w-4 h-4" />
               )}
               {feedback.message}
+            </div>
+          )}
+
+          {/* Share buttons — appear after successful submission */}
+          {feedback?.type === "success" && submittedText && (
+            <div className="mt-4 flex items-center gap-3">
+              <span className="text-xs text-[#64748B]">Share your insight:</span>
+              <a
+                href={farcasterShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#8A63D2]/10 border border-[#8A63D2]/20 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-xs font-medium"
+              >
+                <Image src="/icons/farcaster.svg" alt="" width={14} height={14} className="brightness-0 invert opacity-70" style={{ filter: "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)" }} />
+                Farcaster
+              </a>
+              <a
+                href={xShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 transition-colors text-xs font-medium"
+              >
+                <Image src="/icons/twitter.svg" alt="" width={14} height={14} className="opacity-70" />
+                Post on X
+              </a>
             </div>
           )}
 

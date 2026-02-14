@@ -120,6 +120,10 @@ export const footerCopy = {
   logoAlt: "ZABAL x ETH Boulder",
   socialLinks: [
     {
+      icon: "/icons/farcaster.svg",
+      href: siteCopy.warpcastUrl,
+    },
+    {
       icon: "/icons/twitter.svg",
       href: siteCopy.twitterUrl,
     },
