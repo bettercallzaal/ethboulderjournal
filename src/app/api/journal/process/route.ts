@@ -20,7 +20,7 @@ export async function POST() {
     const response = await fetch(
       `${DELVE_API_URL}/agents/${AGENT_ID}/stack/process`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${API_KEY}`,
         },

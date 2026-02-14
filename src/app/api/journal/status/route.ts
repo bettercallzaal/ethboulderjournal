@@ -2,6 +2,7 @@
  * Journal Status API Route
  *
  * GET /api/journal/status - Get agent stack status
+ * Falls back to recent episodes if stack/status endpoint is unavailable.
  */
 import { NextResponse } from "next/server";
 
@@ -17,6 +18,7 @@ const AGENT_ID = process.env["NEXT_PUBLIC_AGENT_ID"] ?? "698b70742849d936f425984
 
 export async function GET() {
   try {
+    // Try stack/status first
     const response = await fetch(
       `${DELVE_API_URL}/agents/${AGENT_ID}/stack/status`,
       {
@@ -26,16 +28,44 @@ export async function GET() {
       }
     );
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    if (response.ok) {
+      const data = await response.json();
+      return NextResponse.json(data, { status: 200, headers: CORS_HEADERS });
+    }
+
+    // Fallback: get recent episodes to show activity
+    const episodesRes = await fetch(
+      `${DELVE_API_URL}/agents/${AGENT_ID}/episodes/search`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_KEY}`,
+        },
+        body: JSON.stringify({ query: "", limit: 5 }),
+      }
+    );
+
+    if (episodesRes.ok) {
+      const episodes = await episodesRes.json();
+      const episodeCount = Array.isArray(episodes) ? episodes.length : 0;
       return NextResponse.json(
-        { error: "Failed to get status", details: errorText },
-        { status: response.status, headers: CORS_HEADERS }
+        {
+          message_count: 0,
+          is_ready_for_processing: false,
+          last_message_at: null,
+          episode_count: episodeCount,
+          status: "active",
+        },
+        { status: 200, headers: CORS_HEADERS }
       );
     }
 
-    const data = await response.json();
-    return NextResponse.json(data, { status: 200, headers: CORS_HEADERS });
+    // Both failed
+    return NextResponse.json(
+      { message_count: 0, is_ready_for_processing: false, status: "unknown" },
+      { status: 200, headers: CORS_HEADERS }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Internal server error", details: String(error) },
