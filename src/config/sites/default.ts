@@ -1,19 +1,15 @@
 /**
- * Default site config -- used for bonfire subdomains.
- *
- * This is the baseline config. The root domain and (in the future)
- * individual bonfires override specific values.
+ * Default site config -- used as the baseline for this ZABAL deployment.
  */
 import BonfireLanding from "@/components/landing-page/bonfire-landing";
-import { siteCopy } from "@/content/site";
 
 import type { SiteConfig } from "./types";
 
 export const defaultSiteConfig: SiteConfig = {
   navigation: [
+    { label: "Home", href: "/" },
+    { label: "Graph", href: "/graph" },
     { label: "Hyperblogs", href: "/hyperblogs" },
-    { label: "Graph Explorer", href: "/graph" },
-    { label: "Docs", href: siteCopy.docsUrl },
   ],
 
   theme: {
