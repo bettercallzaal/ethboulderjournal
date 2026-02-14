@@ -350,7 +350,7 @@ export function GraphExplorer({
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLimit, setSearchLimit] = useState(30);
+  const [searchLimit, setSearchLimit] = useState(75);
 
   // Last node/edge shown in wiki panel; kept when selection is cleared (e.g. background click) so panel content persists
   const [lastWikiDisplay, setLastWikiDisplay] = useState<{
@@ -786,7 +786,7 @@ export function GraphExplorer({
       bonfire_id: agentSelection.selectedBonfireId,
       node_uuid: centerId,
       depth: 1,
-      limit: 50,
+      limit: 100,
     })
       .then((data) => {
         setExtraGraphData((prev) => mergeGraphData(prev, data));

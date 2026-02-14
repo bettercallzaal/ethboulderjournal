@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import type { WikiEdgeData, WikiNodeData } from "./wiki-panel-utils";
 import { formatAttributeValue, formatLabel } from "./wiki-panel-utils";
 import Attributes from "./attributes";
+import { NodeComment } from "./node-comment";
 
 export interface EntityContentProps {
   node: WikiNodeData;
@@ -87,6 +88,9 @@ export function EntityContent({
           <Attributes attributes={node.attributes} />
         </section>
       )}
+
+      {/* Add a note about this node */}
+      <NodeComment nodeName={node.name ?? "this entity"} nodeId={node.uuid} />
     </div>
   );
 }

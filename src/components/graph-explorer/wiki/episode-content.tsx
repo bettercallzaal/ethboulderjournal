@@ -3,6 +3,7 @@
 import React from "react";
 
 import Attributes from "./attributes";
+import { NodeComment } from "./node-comment";
 import type { WikiEpisodeContent } from "./wiki-panel-utils";
 import {
   formatAttributeValue,
@@ -78,6 +79,9 @@ export function EpisodeContent({ episode }: EpisodeContentProps) {
           </div>
         </section>
       )}
+
+      {/* Add a note about this episode */}
+      <NodeComment nodeName={episode.name || "this episode"} nodeId={episode.name} />
     </div>
   );
 }

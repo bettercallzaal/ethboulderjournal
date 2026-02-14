@@ -15,11 +15,11 @@ export const RADIUS_BY_SIZE: Record<number, number> = {
 
 export const LAYOUT_ALPHA_MIN = 0.0005;
 /** Ideal link length; higher = more space between connected nodes (avoids increasing charge which causes bouncy drag) */
-export const LINK_DISTANCE = 140;
-export const LINK_STRENGTH = 0.5;
-export const CHARGE_STRENGTH = -280;
-export const COLLISION_PADDING = 18;
-export const CENTER_STRENGTH = 0.06;
+export const LINK_DISTANCE = 90;
+export const LINK_STRENGTH = 0.6;
+export const CHARGE_STRENGTH = -180;
+export const COLLISION_PADDING = 14;
+export const CENTER_STRENGTH = 0.08;
 export const ALPHA_DECAY = 0.018;
 export const VELOCITY_DECAY = 0.65;
 export const ZOOM_MIN = 0.65;
@@ -30,7 +30,7 @@ export const MAX_LABEL_WIDTH = 80;
 export const MAX_FROM_HOVERED_EDGE_LABELS = 1;
 
 export const GRAPH_COLORS = {
-  linkStroke: "rgba(95, 95, 95, 0.5)",
+  linkStroke: "rgba(120, 120, 120, 0.6)",
   linkStrokeDimmed: "rgb(28, 28, 28)",
   linkStrokeActive: "rgba(255, 255, 255, 0.5)",
   linkLabelFill: "rgb(200, 200, 200)",
