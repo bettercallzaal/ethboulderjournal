@@ -98,13 +98,19 @@ export async function getAuthHeaders(): Promise<Record<string, string>> {
     }
 
     console.debug(
-      "[Auth Headers] No Clerk token available (getToken=null, no __session cookie)"
+      "[Auth Headers] No Clerk token available, falling back to API_KEY"
     );
-    return {};
   } catch (error) {
-    console.debug("[Auth Headers] auth() threw:", error);
-    return {};
+    console.debug("[Auth Headers] auth() threw, falling back to API_KEY:", error);
   }
+
+  // Strategy 3: Fall back to server-side API key for public/unauthenticated access
+  const apiKey = process.env["API_KEY"];
+  if (apiKey) {
+    return { Authorization: `Bearer ${apiKey}` };
+  }
+
+  return {};
 }
 
 /**

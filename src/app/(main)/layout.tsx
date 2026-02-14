@@ -6,6 +6,10 @@ import { SiteConfigProvider } from "@/contexts";
 
 import { Providers } from "../providers";
 
+const hasClerk = (
+  process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] ?? ""
+).startsWith("pk_");
+
 export default async function MainLayout({
   children,
 }: {
@@ -17,7 +21,11 @@ export default async function MainLayout({
         <SiteConfigProvider>
           <Background>
             <Navbar />
-            <OrgSwitchGuard>{children}</OrgSwitchGuard>
+            {hasClerk ? (
+              <OrgSwitchGuard>{children}</OrgSwitchGuard>
+            ) : (
+              children
+            )}
           </Background>
         </SiteConfigProvider>
       </Providers>

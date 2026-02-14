@@ -75,8 +75,28 @@ export async function checkBonfireAccess(
   bonfireId: string,
   isPublic?: boolean
 ): Promise<AccessCheckResult> {
-  const { userId, orgId } = await auth();
-  const userBonfireId = await getUserBonfireId();
+  let userId: string | null = null;
+  let orgId: string | null = null;
+  let userBonfireId: string | null = null;
+
+  try {
+    const authResult = await auth();
+    userId = authResult.userId;
+    orgId = authResult.orgId;
+    userBonfireId = await getUserBonfireId();
+  } catch {
+    // Clerk auth not available — fall back to API key access
+    // If we have an API_KEY, we're acting as admin
+    if (process.env["API_KEY"]) {
+      return {
+        allowed: true,
+        reason: "api_key_admin",
+        userId: null,
+        orgId: null,
+        userBonfireId: null,
+      };
+    }
+  }
 
   // If we know it's public, allow access
   if (isPublic === true) {
@@ -111,10 +131,19 @@ export async function checkBonfireAccess(
     };
   }
 
+  // If we have an API key configured, allow access (server-side admin key)
+  if (process.env["API_KEY"]) {
+    return {
+      allowed: true,
+      reason: "api_key_admin",
+      userId,
+      orgId,
+      userBonfireId,
+    };
+  }
+
   // If we don't know if it's public, we need to assume it might be
-  // The caller should provide isPublic when possible
   if (isPublic === undefined) {
-    // Can't determine - deny by default for safety
     return {
       allowed: false,
       reason: "unknown_visibility",

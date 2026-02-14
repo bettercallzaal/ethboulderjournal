@@ -14,6 +14,11 @@ import Drawer from "./drawer";
 import { NavbarButton } from "./navbar-button";
 import Signin from "./signin";
 
+const hasClerk =
+  typeof window !== "undefined"
+    ? (process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] ?? "").startsWith("pk_")
+    : (process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] ?? "").startsWith("pk_");
+
 export type { NavigationItem };
 
 export function Navbar() {
@@ -86,7 +91,7 @@ export function Navbar() {
 
       {/* Auth and Wallet buttons */}
       <div className="navbar-end items-center gap-2 hidden lg:flex">
-        <Signin />
+        {hasClerk && <Signin />}
         <ConnectWallet />
       </div>
     </nav>

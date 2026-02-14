@@ -19,25 +19,36 @@ const { laroSoft, dmSans, montserrat } = customFonts;
 export const metadata: Metadata = metadataConfig;
 export const viewport: Viewport = viewportConfig;
 
+const clerkKey = process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] ?? "";
+const hasClerk = clerkKey.startsWith("pk_");
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <ClerkProvider localization={clerkLocalizationConfig}>
-      <html lang="en" suppressHydrationWarning data-theme="dark">
-        <body
-          className={cn(
-            laroSoft.variable,
-            dmSans.variable,
-            montserrat.variable,
-            "font-dm-sans antialiased min-h-dvh"
-          )}
-        >
-          <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+  const content = (
+    <html lang="en" suppressHydrationWarning data-theme="dark">
+      <body
+        className={cn(
+          laroSoft.variable,
+          dmSans.variable,
+          montserrat.variable,
+          "font-dm-sans antialiased min-h-dvh"
+        )}
+      >
+        <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+      </body>
+    </html>
   );
+
+  if (hasClerk) {
+    return (
+      <ClerkProvider localization={clerkLocalizationConfig}>
+        {content}
+      </ClerkProvider>
+    );
+  }
+
+  return content;
 }
