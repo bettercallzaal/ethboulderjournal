@@ -1,22 +1,16 @@
 import { NavigationItem } from "@/components/navbar";
 
-import { siteCopy } from "./site";
-
 export const navigationItems: NavigationItem[] = [
   {
     label: "Home",
     href: "/",
   },
   {
-    label: "Hyperblogs",
-    href: "/hyperblogs",
-  },
-  {
-    label: "Graph Explorer",
+    label: "Graph",
     href: "/graph",
   },
   {
-    label: "Docs",
-    href: siteCopy.docsUrl,
+    label: "Hyperblogs",
+    href: "/hyperblogs",
   },
 ] as const;

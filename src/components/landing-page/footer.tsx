@@ -25,7 +25,7 @@ export default function Footer() {
       <div className="flex flex-col justify-center items-center max-w-full lg:max-w-[581px] my-auto lg:my-36">
         <Image
           src="/logo-square.svg"
-          alt="Bonfires.ai"
+          alt="ZABAL"
           width={80}
           height={80}
         />
