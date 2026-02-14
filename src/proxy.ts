@@ -1,53 +1,20 @@
 /**
- * Clerk Authentication Proxy
+ * Authentication Proxy / Middleware
  *
- * Handles route protection for the application.
- * - Always public: Landing page, auth pages, public hyperblogs
- * - Always protected: Dashboard, documents, profile, bonfire settings
- * - Bonfire routes: Access control happens at API route level (is_public check)
+ * When Clerk keys are configured, uses clerkMiddleware for route protection.
+ * When Clerk is not configured, passes all requests through with subdomain handling.
  */
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+const clerkKey = process.env["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"] ?? "";
+const hasClerk = clerkKey.startsWith("pk_");
 
 /**
- * Routes that ALWAYS require authentication (regardless of bonfire visibility)
+ * Subdomain override logic for Vercel preview URLs and local development.
+ * Uses ?subdomain= param on first visit, then persists via cookie.
+ * Clear with ?subdomain= (empty value) to return to root domain view.
  */
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/documents(.*)",
-  "/bonfire-settings(.*)",
-  "/profile(.*)",
-]);
-
-/**
- * Routes that are ALWAYS public
- * Note: Bonfire-specific routes are NOT listed here - their access control
- * happens at the API route level based on the bonfire's is_public flag.
- */
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/hyperblogs(.*)",
-  "/api/hyperblogs(.*)",
-]);
-
-export default clerkMiddleware(async (auth, req) => {
-  // Always protect these routes
-  if (isProtectedRoute(req)) {
-    await auth.protect();
-  }
-  // Public routes and bonfire-specific routes pass through
-  // Bonfire access control (is_public check) happens at API route level
-
-  // Subdomain override for Vercel preview URLs and local development.
-  // Uses ?subdomain= param on first visit, then persists via cookie.
-  // Clear with ?subdomain= (empty value) to return to root domain view.
-  //
-  // Examples:
-  //   http://localhost:3000?subdomain=boulder   → bonfire subdomain
-  //   http://localhost:3000?subdomain=          → clears override, root view
+function handleSubdomainOverride(req: NextRequest): NextResponse | null {
   const host = req.headers.get("host") ?? "";
   const isLocalhost =
     host.startsWith("localhost") || host.startsWith("127.0.0.1");
@@ -85,7 +52,53 @@ export default clerkMiddleware(async (auth, req) => {
 
     return NextResponse.next();
   }
-});
+
+  return null;
+}
+
+/**
+ * Build the middleware handler based on whether Clerk is configured
+ */
+async function buildMiddleware(): Promise<
+  (req: NextRequest) => NextResponse | Promise<NextResponse | void>
+> {
+  if (hasClerk) {
+    // Dynamically import Clerk only when keys are present
+    const { clerkMiddleware, createRouteMatcher } = await import(
+      "@clerk/nextjs/server"
+    );
+
+    const isProtectedRoute = createRouteMatcher([
+      "/dashboard(.*)",
+      "/documents(.*)",
+      "/bonfire-settings(.*)",
+      "/profile(.*)",
+    ]);
+
+    return clerkMiddleware(async (auth, req) => {
+      if (isProtectedRoute(req)) {
+        await auth.protect();
+      }
+      return handleSubdomainOverride(req) ?? undefined;
+    }) as (req: NextRequest) => NextResponse | Promise<NextResponse | void>;
+  }
+
+  // No Clerk — just handle subdomain overrides
+  return (req: NextRequest) => {
+    return handleSubdomainOverride(req) ?? NextResponse.next();
+  };
+}
+
+// Cache the middleware handler so we only build it once
+let middlewareHandler: ReturnType<typeof buildMiddleware> | null = null;
+
+export default async function middleware(req: NextRequest) {
+  if (!middlewareHandler) {
+    middlewareHandler = buildMiddleware();
+  }
+  const handler = await middlewareHandler;
+  return handler(req);
+}
 
 export const config = {
   matcher: [
