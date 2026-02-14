@@ -82,7 +82,7 @@ export async function checkBonfireAccess(
   try {
     const authResult = await auth();
     userId = authResult.userId;
-    orgId = authResult.orgId;
+    orgId = authResult.orgId ?? null;
     userBonfireId = await getUserBonfireId();
   } catch {
     // Clerk auth not available — fall back to API key access
