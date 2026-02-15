@@ -1,0 +1,22 @@
+{
+  "accountAssociation": {
+    "header": "PLACEHOLDER_GENERATE_AT_https://farcaster.xyz/~/developers/new",
+    "payload": "PLACEHOLDER",
+    "signature": "PLACEHOLDER"
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "ZABAL at ETH Boulder",
+    "iconUrl": "https://ethboulderjournal.vercel.app/api/og",
+    "homeUrl": "https://ethboulderjournal.vercel.app",
+    "splashImageUrl": "https://ethboulderjournal.vercel.app/logo-square.svg",
+    "splashBackgroundColor": "#0a0a0f",
+    "subtitle": "ETH Boulder Knowledge Graph",
+    "description": "Follow ETH Boulder 2026 live — explore the knowledge graph, add your insights, and generate recaps to share.",
+    "primaryCategory": "social",
+    "tags": ["ethboulder", "zabal", "knowledgegraph", "web3", "community"],
+    "ogTitle": "ZABAL at ETH Boulder",
+    "ogDescription": "Follow ETH Boulder 2026 live through the ZABAL knowledge graph",
+    "ogImageUrl": "https://ethboulderjournal.vercel.app/api/og"
+  }
+}
