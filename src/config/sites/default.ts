@@ -9,6 +9,7 @@ export const defaultSiteConfig: SiteConfig = {
   navigation: [
     { label: "Home", href: "/" },
     { label: "Graph", href: "/graph" },
+    { label: "Knowledge", href: "/knowledge" },
     { label: "Journal", href: "/journal" },
     { label: "Hyperblogs", href: "/hyperblogs" },
   ],
