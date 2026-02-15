@@ -4,12 +4,16 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } fro
 
 import { useRouter } from "next/navigation";
 
+import Image from "next/image";
+
 import {
   Activity,
   Flame,
   Loader2,
   RefreshCw,
 } from "lucide-react";
+
+const SITE_URL = "https://ethboulderjournal.vercel.app";
 
 import { siteCopy } from "@/content";
 import type { AgentLatestEpisodesResponse } from "@/types";
@@ -213,29 +217,63 @@ export const JournalGraphFeed = forwardRef<JournalGraphFeedHandle>(
               No episodes yet. Add entries and process them to build the graph.
             </div>
           ) : (
-            episodes.map((ep) => (
-              <button
-                key={ep.uuid}
-                onClick={() => handleEpisodeClick(ep.uuid)}
-                className="w-full text-left bg-[#1a1d22] border border-white/5 rounded-lg p-3 hover:border-[var(--brand-primary)]/30 transition-colors cursor-pointer"
-              >
-                {ep.name && (
-                  <p className="text-xs font-medium text-white/90 mb-1">
-                    {truncate(ep.name, 80)}
-                  </p>
-                )}
-                {ep.content && (
-                  <p className="text-[11px] text-[#94A3B8] leading-relaxed">
-                    {truncate(ep.content, 120)}
-                  </p>
-                )}
-                {ep.valid_at && (
-                  <p className="text-[10px] text-[#64748B] mt-1.5">
-                    {formatDate(ep.valid_at)}
-                  </p>
-                )}
-              </button>
-            ))
+            episodes.map((ep) => {
+              const episodeText = ep.name || ep.content || "";
+              const shareText = `${truncate(episodeText, 200)}\n\nFrom the ZABAL x ETH Boulder knowledge graph #onchaincreators`;
+              const castUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/graph?centerNode=" + ep.uuid)}`;
+
+              return (
+                <div
+                  key={ep.uuid}
+                  className="bg-[#1a1d22] border border-white/5 rounded-lg p-3 hover:border-[var(--brand-primary)]/30 transition-colors"
+                >
+                  <button
+                    onClick={() => handleEpisodeClick(ep.uuid)}
+                    className="w-full text-left cursor-pointer"
+                  >
+                    {ep.name && (
+                      <p className="text-xs font-medium text-white/90 mb-1">
+                        {truncate(ep.name, 80)}
+                      </p>
+                    )}
+                    {ep.content && (
+                      <p className="text-[11px] text-[#94A3B8] leading-relaxed">
+                        {truncate(ep.content, 120)}
+                      </p>
+                    )}
+                  </button>
+                  <div className="flex items-center justify-between mt-2">
+                    {ep.valid_at ? (
+                      <span className="text-[10px] text-[#64748B]">
+                        {formatDate(ep.valid_at)}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
+                    <a
+                      href={castUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"
+                      title="Share on Farcaster"
+                    >
+                      <Image
+                        src="/icons/farcaster.svg"
+                        alt=""
+                        width={9}
+                        height={9}
+                        style={{
+                          filter:
+                            "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)",
+                        }}
+                      />
+                      Cast
+                    </a>
+                  </div>
+                </div>
+              );
+            })
           )}
         </div>
       </div>

@@ -2,15 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import Image from "next/image";
+
 import {
   CheckCircle,
   AlertCircle,
   Loader2,
   Send,
+  Share2,
   Trash2,
 } from "lucide-react";
 
-import { siteCopy } from "@/content";
+const SITE_URL = "https://ethboulderjournal.vercel.app";
 import {
   type JournalEntry,
   addJournalEntry,
@@ -123,6 +126,16 @@ export function JournalWriteSection({
     setEntries([]);
   };
 
+  const buildFarcasterUrl = (entryText: string) => {
+    const shareText = `${entryText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph #onchaincreators`;
+    return `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/journal")}`;
+  };
+
+  const buildXUrl = (entryText: string) => {
+    const shareText = `${entryText}\n\n#onchaincreators`;
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(shareText.slice(0, 250))}&url=${encodeURIComponent(SITE_URL + "/journal")}`;
+  };
+
   return (
     <div className="bg-[#22252B]/50 border border-white/5 rounded-xl p-5 flex flex-col h-full">
       <h2 className="text-sm font-semibold text-[#94A3B8] uppercase tracking-wider mb-4">
@@ -187,19 +200,64 @@ export function JournalWriteSection({
         </button>
       </div>
 
-      {/* Feedback */}
+      {/* Feedback + share prompt */}
       {feedback && (
-        <div
-          className={`mt-2 flex items-center gap-1.5 text-xs ${
-            feedback.type === "success" ? "text-green-400" : "text-red-400"
-          }`}
-        >
-          {feedback.type === "success" ? (
-            <CheckCircle className="w-3 h-3" />
-          ) : (
-            <AlertCircle className="w-3 h-3" />
-          )}
-          {feedback.message}
+        <div className="mt-2">
+          <div
+            className={`flex items-center gap-1.5 text-xs ${
+              feedback.type === "success" ? "text-green-400" : "text-red-400"
+            }`}
+          >
+            {feedback.type === "success" ? (
+              <CheckCircle className="w-3 h-3" />
+            ) : (
+              <AlertCircle className="w-3 h-3" />
+            )}
+            {feedback.message}
+          </div>
+          {(() => {
+            const lastEntry = entries.length > 0 ? entries[entries.length - 1] : undefined;
+            if (feedback.type !== "success" || !lastEntry || lastEntry.status !== "submitted") return null;
+            return (
+              <div className="flex items-center gap-2 mt-2">
+                <Share2 className="w-3 h-3 text-[#64748B]" />
+                <span className="text-[10px] text-[#64748B]">Share it:</span>
+                <a
+                  href={buildFarcasterUrl(lastEntry.text)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#8A63D2]/10 border border-[#8A63D2]/20 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[10px] font-medium"
+                >
+                  <Image
+                    src="/icons/farcaster.svg"
+                    alt=""
+                    width={10}
+                    height={10}
+                    style={{
+                      filter:
+                        "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)",
+                    }}
+                  />
+                  Cast on Farcaster
+                </a>
+                <a
+                  href={buildXUrl(lastEntry.text)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 transition-colors text-[10px] font-medium"
+                >
+                  <Image
+                    src="/icons/twitter.svg"
+                    alt=""
+                    width={10}
+                    height={10}
+                    className="opacity-60"
+                  />
+                  Post on X
+                </a>
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -243,29 +301,70 @@ export function JournalWriteSection({
                   <span className="text-[10px] text-[#64748B]">
                     {new Date(entry.timestamp).toLocaleTimeString()}
                   </span>
-                  <span
-                    className={`text-[10px] flex items-center gap-1 ${
-                      entry.status === "submitted"
-                        ? "text-green-400"
-                        : entry.status === "error"
-                          ? "text-red-400"
-                          : "text-[#64748B]"
-                    }`}
-                  >
-                    {entry.status === "submitted" ? (
-                      <>
-                        <CheckCircle className="w-2.5 h-2.5" /> Added
-                      </>
-                    ) : entry.status === "error" ? (
-                      <>
-                        <AlertCircle className="w-2.5 h-2.5" /> Failed
-                      </>
-                    ) : (
-                      <>
-                        <Loader2 className="w-2.5 h-2.5 animate-spin" /> Sending
-                      </>
+                  <div className="flex items-center gap-2">
+                    {entry.status === "submitted" && (
+                      <div className="flex items-center gap-1">
+                        <a
+                          href={buildFarcasterUrl(entry.text)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"
+                          title="Share on Farcaster"
+                        >
+                          <Image
+                            src="/icons/farcaster.svg"
+                            alt=""
+                            width={9}
+                            height={9}
+                            style={{
+                              filter:
+                                "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)",
+                            }}
+                          />
+                          Cast
+                        </a>
+                        <a
+                          href={buildXUrl(entry.text)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 text-white/50 hover:bg-white/10 transition-colors text-[9px] font-medium"
+                          title="Post on X"
+                        >
+                          <Image
+                            src="/icons/twitter.svg"
+                            alt=""
+                            width={9}
+                            height={9}
+                            className="opacity-50"
+                          />
+                          X
+                        </a>
+                      </div>
                     )}
-                  </span>
+                    <span
+                      className={`text-[10px] flex items-center gap-1 ${
+                        entry.status === "submitted"
+                          ? "text-green-400"
+                          : entry.status === "error"
+                            ? "text-red-400"
+                            : "text-[#64748B]"
+                      }`}
+                    >
+                      {entry.status === "submitted" ? (
+                        <>
+                          <CheckCircle className="w-2.5 h-2.5" /> Added
+                        </>
+                      ) : entry.status === "error" ? (
+                        <>
+                          <AlertCircle className="w-2.5 h-2.5" /> Failed
+                        </>
+                      ) : (
+                        <>
+                          <Loader2 className="w-2.5 h-2.5 animate-spin" /> Sending
+                        </>
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
