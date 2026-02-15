@@ -56,7 +56,7 @@ export function NodeComment({ nodeName, nodeId }: NodeCommentProps) {
   };
 
   const shareText = submittedText
-    ? `${submittedText}\n\nNote on "${nodeName}" — ZABAL x ETH Boulder`
+    ? `${submittedText}\n\nNote on "${nodeName}" — ZABAL x ETH Boulder #onchaincreators`
     : "";
 
   const farcasterUrl = shareText

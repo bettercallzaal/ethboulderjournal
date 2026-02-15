@@ -48,7 +48,7 @@ Requirements:
 - Professional but authentic tone
 - 150-300 words
 - Include specific details (people met, projects discussed, insights gained)
-- Use 2-3 relevant hashtags at the end (#ETHBoulder #Web3 etc.)
+- Always include #onchaincreators and 1-2 other relevant hashtags at the end (#ETHBoulder #Web3 etc.)
 - Start with a hook that grabs attention
 - End with a call to action or reflection`;
 
@@ -60,7 +60,8 @@ Requirements:
 - Include sections for: Introduction, Key Highlights, People & Projects, Takeaways, What's Next
 - Reference specific conversations, people, and projects from the knowledge graph
 - Authentic, first-person narrative tone
-- Suitable for the web3 community audience`;
+- Suitable for the web3 community audience
+- Include #onchaincreators hashtag somewhere in the post`;
 
 type RecapFormat = "linkedin" | "blog";
 
@@ -204,9 +205,11 @@ export function JournalChatSection() {
     }
   };
 
-  const shareText = generatedContent ?? "";
+  const shareText = generatedContent
+    ? `${generatedContent.slice(0, 280)}\n\n#onchaincreators`
+    : "";
   const farcasterUrl = shareText
-    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText.slice(0, 300))}%0A%0A&embeds[]=${encodeURIComponent(SITE_URL + "/journal")}`
+    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/journal")}`
     : "";
   const xUrl = shareText
     ? `https://x.com/intent/tweet?text=${encodeURIComponent(shareText.slice(0, 250))}&url=${encodeURIComponent(SITE_URL + "/journal")}`

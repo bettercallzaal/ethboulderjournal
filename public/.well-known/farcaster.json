@@ -1,8 +1,8 @@
 {
   "accountAssociation": {
-    "header": "PLACEHOLDER_GENERATE_AT_https://farcaster.xyz/~/developers/new",
-    "payload": "PLACEHOLDER",
-    "signature": "PLACEHOLDER"
+    "header": "eyJmaWQiOjE5NjQwLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MDIxQTU2NUM0MzdCN2Q0YzM0MjA0MDcxRjk1RUQ0MzcxNjJBNUZjQiJ9",
+    "payload": "eyJkb21haW4iOiJldGhib3VsZGVyam91cm5hbC52ZXJjZWwuYXBwIn0",
+    "signature": "z4txkTgggw6WT8HI95xndE1gomVWW68WP7jU8eR/EnIFznhzjEYvUxNd36kWE1pfvrhTjrMwMLF816M567uz4hw="
   },
   "miniapp": {
     "version": "1",
@@ -14,7 +14,7 @@
     "subtitle": "ETH Boulder Knowledge Graph",
     "description": "Follow ETH Boulder 2026 live — explore the knowledge graph, add your insights, and generate recaps to share.",
     "primaryCategory": "social",
-    "tags": ["ethboulder", "zabal", "knowledgegraph", "web3", "community"],
+    "tags": ["ethboulder", "zabal", "onchaincreators", "web3", "community"],
     "ogTitle": "ZABAL at ETH Boulder",
     "ogDescription": "Follow ETH Boulder 2026 live through the ZABAL knowledge graph",
     "ogImageUrl": "https://ethboulderjournal.vercel.app/api/og"

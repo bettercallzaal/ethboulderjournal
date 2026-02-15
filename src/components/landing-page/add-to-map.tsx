@@ -103,7 +103,7 @@ export default function AddToMap() {
   };
 
   const shareText = submittedText
-    ? `${submittedText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph`
+    ? `${submittedText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph #onchaincreators`
     : "";
 
   const farcasterShareUrl = shareText
