@@ -6,6 +6,8 @@ import { Search, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import type { GraphEdge, GraphNode } from "@/types/graph";
+import { buildEmbedUrl, buildShareText } from "@/lib/farcaster";
+import { CastButton } from "./share-button";
 
 interface EntitiesViewProps {
   entities: GraphNode[];
@@ -96,10 +98,16 @@ export function EntitiesView({ entities, edges, onSelect }: EntitiesViewProps) {
                   </div>
                 )}
                 {(entity.summary || entity.content) && (
-                  <p className="text-[11px] text-[#94A3B8] line-clamp-3 leading-relaxed">
+                  <p className="text-[11px] text-[#94A3B8] line-clamp-2 leading-relaxed mb-2">
                     {entity.summary || entity.content}
                   </p>
                 )}
+                <div className="flex justify-end mt-auto pt-1">
+                  <CastButton
+                    text={buildShareText(entity.name ?? "Entity", "entity")}
+                    embedUrl={buildEmbedUrl(entity.uuid)}
+                  />
+                </div>
               </button>
             );
           })}

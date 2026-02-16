@@ -7,6 +7,7 @@ import { GitBranch, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { GraphEdge, GraphNode } from "@/types/graph";
 import { formatLabel } from "@/components/graph-explorer/wiki/wiki-panel-utils";
+import { buildEmbedUrl, shareToFarcaster } from "@/lib/farcaster";
 
 interface ConnectionsViewProps {
   edges: GraphEdge[];
@@ -84,6 +85,9 @@ export function ConnectionsView({
                 <th className="text-left px-3 py-2 font-medium hidden lg:table-cell">
                   Fact
                 </th>
+                <th className="text-right px-3 py-2 font-medium w-12">
+                  Share
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -117,6 +121,21 @@ export function ConnectionsView({
                     <span className="text-[11px] text-[#94A3B8] truncate max-w-[200px] block">
                       {edge.fact ?? "—"}
                     </span>
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        shareToFarcaster({
+                          text: `${edge.sourceName} → ${formatLabel(edge.type)} → ${edge.targetName}\n\nFrom the ZABAL x ETH Boulder knowledge graph #onchaincreators`,
+                          embedUrl: buildEmbedUrl(edge.source ?? ""),
+                        });
+                      }}
+                      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"
+                      title="Share on Farcaster"
+                    >
+                      Cast
+                    </button>
                   </td>
                 </tr>
               ))}

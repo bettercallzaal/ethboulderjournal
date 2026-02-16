@@ -2,8 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import Image from "next/image";
-
 import { Clock, Search } from "lucide-react";
 
 import type { GraphNode } from "@/types/graph";
@@ -11,8 +9,8 @@ import {
   formatDate,
   parseEpisodeContent,
 } from "@/components/graph-explorer/wiki/wiki-panel-utils";
-
-const SITE_URL = "https://ethboulderjournal.vercel.app";
+import { buildEmbedUrl, buildShareText } from "@/lib/farcaster";
+import { CastButton } from "./share-button";
 
 interface EpisodesViewProps {
   episodes: GraphNode[];
@@ -77,8 +75,6 @@ export function EpisodesView({ episodes, onSelect }: EpisodesViewProps) {
             });
             const displayName = parsed.name || ep.name || "Untitled Episode";
             const displayContent = parsed.content || ep.summary || "";
-            const shareText = `${truncate(displayName, 200)}\n\nFrom the ZABAL x ETH Boulder knowledge graph #onchaincreators`;
-            const castUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/graph?centerNode=" + ep.uuid)}`;
 
             return (
               <div key={ep.uuid} className="relative pl-10 pb-5">
@@ -109,24 +105,10 @@ export function EpisodesView({ episodes, onSelect }: EpisodesViewProps) {
 
                 {/* Share */}
                 <div className="mt-1.5 flex justify-end">
-                  <a
-                    href={castUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"
-                  >
-                    <Image
-                      src="/icons/farcaster.svg"
-                      alt=""
-                      width={9}
-                      height={9}
-                      style={{
-                        filter:
-                          "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)",
-                      }}
-                    />
-                    Cast
-                  </a>
+                  <CastButton
+                    text={buildShareText(truncate(displayName, 200), "episode")}
+                    embedUrl={buildEmbedUrl(ep.uuid)}
+                  />
                 </div>
               </div>
             );

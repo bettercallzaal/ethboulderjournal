@@ -1,4 +1,5 @@
 import { Background } from "@/components/background";
+import { FarcasterInit } from "@/components/farcaster-init";
 import { Navbar } from "@/components/navbar";
 import { OrgSwitchGuard } from "@/components/subdomain/OrgSwitchGuard";
 import { SubdomainResolver } from "@/components/subdomain/SubdomainResolver";
@@ -20,6 +21,7 @@ export default async function MainLayout({
       <Providers>
         <SiteConfigProvider>
           <Background>
+            <FarcasterInit />
             <Navbar />
             {hasClerk ? (
               <OrgSwitchGuard>{children}</OrgSwitchGuard>

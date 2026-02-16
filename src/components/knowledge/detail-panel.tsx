@@ -8,6 +8,8 @@ import { EpisodeContent } from "@/components/graph-explorer/wiki/episode-content
 import type { WikiEdgeData } from "@/components/graph-explorer/wiki/wiki-panel-utils";
 import { parseEpisodeContent } from "@/components/graph-explorer/wiki/wiki-panel-utils";
 import type { GraphEdge, GraphNode } from "@/types/graph";
+import { buildEmbedUrl, buildShareText } from "@/lib/farcaster";
+import { CastButton, XShareButton } from "./share-button";
 
 export interface SelectedItem {
   type: "entity" | "episode";
@@ -67,6 +69,21 @@ export function DetailPanel({
         >
           <X className="w-4 h-4 text-[#64748B]" />
         </button>
+      </div>
+
+      {/* Share bar */}
+      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-[#1a1d22]/50">
+        <span className="text-[10px] text-[#64748B] mr-1">Share:</span>
+        <CastButton
+          size="md"
+          text={buildShareText(node.name ?? "Item", item.type)}
+          embedUrl={buildEmbedUrl(node.uuid)}
+        />
+        <XShareButton
+          size="md"
+          text={buildShareText(node.name ?? "Item", item.type)}
+          url={buildEmbedUrl(node.uuid)}
+        />
       </div>
 
       {/* Content */}
