@@ -1,6 +1,8 @@
 "use client";
 
-import { X } from "lucide-react";
+import Link from "next/link";
+
+import { BookOpen, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { EntityContent } from "@/components/graph-explorer/wiki/entity-content";
@@ -123,6 +125,22 @@ export function DetailPanel({
             })}
           />
         )}
+
+        {/* Write a Hyperblog CTA */}
+        <Link
+          href="/hyperblogs"
+          className="mt-6 flex items-center gap-3 bg-gradient-to-r from-[var(--brand-primary)]/10 to-transparent border border-[var(--brand-primary)]/20 rounded-xl p-4 hover:border-[var(--brand-primary)]/40 transition-colors group"
+        >
+          <BookOpen className="w-5 h-5 text-[var(--brand-primary)] shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-white group-hover:text-[var(--brand-primary)] transition-colors">
+              Write a Hyperblog
+            </p>
+            <p className="text-[11px] text-[#64748B] mt-0.5">
+              Generate an AI-powered blog post about {node.name || "this topic"}
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );

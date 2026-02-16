@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Image from "next/image";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -21,7 +21,7 @@ import {
 import { apiClient } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import { formatErrorMessage } from "@/lib/utils";
-import { hyperblogsCopy } from "@/content/hyperblogs";
+import { hyperblogsCopy, zabalPromptSuggestions } from "@/content/hyperblogs";
 
 type TxStep = "idle" | "signing" | "processing" | "redirecting";
 
@@ -47,6 +47,8 @@ export interface CreateBlogModalProps {
   dataroomPriceUsd?: number;
   /** Called with the new hyperblog ID on successful purchase */
   onSuccess?: (hyperblogId: string) => void;
+  /** Optional: pre-fill the description textarea */
+  initialPrompt?: string;
 }
 
 /**
@@ -60,9 +62,13 @@ export function CreateBlogModal({
   dataroomTitle,
   dataroomPriceUsd,
   onSuccess,
+  initialPrompt,
 }: CreateBlogModalProps) {
   const { createTooltipContent, createTitle, createDescription, createDescriptionPlaceholder } = hyperblogsCopy;
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(initialPrompt ?? "");
+  useEffect(() => {
+    if (initialPrompt) setDescription(initialPrompt);
+  }, [initialPrompt]);
   const [blogLength, setBlogLength] = useState<"short" | "medium" | "long">(
     "medium"
   );
@@ -193,6 +199,29 @@ export function CreateBlogModal({
         )}
         <Badge variant="outline">Cost: ${dataroomPriceUsd ?? 0}</Badge>
       </div>
+      {/* Quick prompt suggestions */}
+      <div className="mt-3 mb-1">
+        <p className="text-[11px] text-dark-s-500 mb-2">Quick prompts:</p>
+        <div className="flex flex-wrap gap-1.5">
+          {zabalPromptSuggestions.map((suggestion) => (
+            <button
+              key={suggestion.label}
+              type="button"
+              onClick={() => setDescription(suggestion.prompt)}
+              disabled={isSubmitting}
+              className={cn(
+                "px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors border",
+                description === suggestion.prompt
+                  ? "bg-[var(--brand-primary)]/20 text-[var(--brand-primary)] border-[var(--brand-primary)]/30"
+                  : "text-dark-s-300 border-dark-s-700 hover:text-white hover:border-dark-s-500"
+              )}
+            >
+              {suggestion.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit} className="flex flex-col mt-3">
         <label
           htmlFor="create-blog-description"

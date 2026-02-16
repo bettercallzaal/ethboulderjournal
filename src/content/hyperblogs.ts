@@ -10,3 +10,37 @@ export const hyperblogsCopy = {
   createTooltipContent: "Describe what you want the content to be about; mention specific topics, themes or subjects if you wish to see them in the blog.",
   createDescriptionPlaceholder: "Describe what you want the blog to cover (Max 600 characters)",
 };
+
+/** Pre-written ZABAL-themed prompts for quick blog creation */
+export const zabalPromptSuggestions = [
+  {
+    label: "ZABAL x ETH Boulder",
+    prompt:
+      "Write about how the ZABAL community is showing up at ETH Boulder 2026 — what they're building, who they're connecting with, and how music meets Web3 at this hackathon.",
+  },
+  {
+    label: "Web3 Music Revolution",
+    prompt:
+      "Explore how ZABAL and the onchain creators movement is changing how musicians earn, collaborate, and own their work — from tokenized royalties to artist DAOs emerging at ETH Boulder.",
+  },
+  {
+    label: "Knowledge Graph Story",
+    prompt:
+      "Tell the story of the ZABAL knowledge graph — how conversations, builder updates, and community interactions at ETH Boulder are being captured and connected into a living map of ideas.",
+  },
+  {
+    label: "Builder Spotlight",
+    prompt:
+      "Highlight the builders and creators in the ZABAL community at ETH Boulder — what projects are they working on, what problems are they solving, and what connects them.",
+  },
+  {
+    label: "Community Impact",
+    prompt:
+      "Write about the impact of the ZABAL community on ETH Boulder and the broader Web3 music ecosystem — how bringing musicians, builders, and creators together is sparking new collaborations.",
+  },
+  {
+    label: "Onchain Creators",
+    prompt:
+      "Explore the #onchaincreators movement through the lens of ZABAL and ETH Boulder — how artists and builders are using blockchain to create, share, and monetize their work together.",
+  },
+];
