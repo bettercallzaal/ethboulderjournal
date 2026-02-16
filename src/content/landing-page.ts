@@ -8,7 +8,7 @@ export const heroCopy = {
   description:
     "Your window into ETH Boulder 2026 — who's building, what they're talking about, and how to be part of it.",
   primaryCta: "Explore the Graph",
-  primaryCtaHref: "/graph",
+  primaryCtaHref: "/graph?q=ZABAL",
   secondaryCta: "Join ZABAL Community",
   secondaryCtaMobile: "Join ZABAL",
   secondaryCtaHref: siteCopy.telegramGroupUrl,
@@ -42,7 +42,7 @@ export const knowledgeGraphSectionCopy = {
     },
   ],
   cta: "Explore ZABAL Graph",
-  ctaHref: "/graph",
+  ctaHref: "/graph?q=ZABAL",
 };
 
 export const hyperblogsPreviewSectionCopy = {
@@ -101,8 +101,8 @@ export const peopleSectionCopy = {
   subtitle: "The ZABAL Community",
   description:
     "Meet the builders, musicians, and creators in the ZABAL community. See what they're working on and what they're talking about at ETH Boulder 2026.",
-  cta: "See Everyone",
-  ctaHref: "/graph",
+  cta: "See ZABAL's Connections",
+  ctaHref: "/graph?q=bettercallzaal",
 };
 
 export const footerCopy = {
@@ -113,7 +113,7 @@ export const footerCopy = {
   mobileSubtitle:
     "Follow along with ETH Boulder through ZABAL — questions, collabs, or just vibes, we're here.",
   primaryCta: "Explore the Graph",
-  primaryCtaHref: "/graph",
+  primaryCtaHref: "/graph?q=ZABAL",
   secondaryCta: "Join ZABAL Community",
   secondaryCtaHref: siteCopy.telegramGroupUrl,
   logo: "/eth-boulder-logo.svg",
