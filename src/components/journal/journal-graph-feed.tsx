@@ -4,8 +4,6 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } fro
 
 import { useRouter } from "next/navigation";
 
-import Image from "next/image";
-
 import {
   Activity,
   Flame,
@@ -13,7 +11,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-const SITE_URL = "https://ethboulderjournal.vercel.app";
+import { buildShareText, buildEmbedUrl } from "@/lib/farcaster";
+import { CastButton } from "@/components/knowledge/share-button";
 
 import { siteCopy } from "@/content";
 import type { AgentLatestEpisodesResponse } from "@/types";
@@ -218,9 +217,7 @@ export const JournalGraphFeed = forwardRef<JournalGraphFeedHandle>(
             </div>
           ) : (
             episodes.map((ep) => {
-              const episodeText = ep.name || ep.content || "";
-              const shareText = `${truncate(episodeText, 200)}\n\nFrom the ZABAL x ETH Boulder knowledge graph #onchaincreators`;
-              const castUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/graph?centerNode=" + ep.uuid)}`;
+              const displayName = ep.name || ep.content || "Episode";
 
               return (
                 <div
@@ -250,26 +247,15 @@ export const JournalGraphFeed = forwardRef<JournalGraphFeedHandle>(
                     ) : (
                       <span />
                     )}
-                    <a
-                      href={castUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"
-                      title="Share on Farcaster"
-                    >
-                      <Image
-                        src="/icons/farcaster.svg"
-                        alt=""
-                        width={9}
-                        height={9}
-                        style={{
-                          filter:
-                            "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)",
-                        }}
-                      />
-                      Cast
-                    </a>
+                    <CastButton
+                      text={buildShareText(truncate(displayName, 200), "episode")}
+                      embedUrl={buildEmbedUrl({
+                        uuid: ep.uuid,
+                        name: ep.name,
+                        type: "episode",
+                        summary: ep.content,
+                      })}
+                    />
                   </div>
                 </div>
               );

@@ -128,7 +128,11 @@ export function ConnectionsView({
                         e.stopPropagation();
                         shareToFarcaster({
                           text: `${edge.sourceName} → ${formatLabel(edge.type)} → ${edge.targetName}\n\nFrom the ZABAL x ETH Boulder knowledge graph #onchaincreators`,
-                          embedUrl: buildEmbedUrl(edge.source ?? ""),
+                          embedUrl: buildEmbedUrl({
+                            uuid: edge.source ?? "",
+                            name: `${edge.sourceName} → ${formatLabel(edge.type)} → ${edge.targetName}`,
+                            type: "entity",
+                          }),
                         });
                       }}
                       className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"

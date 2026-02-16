@@ -6,6 +6,8 @@ import Image from "next/image";
 
 import { Flame, Loader2, Send, CheckCircle, AlertCircle, Activity } from "lucide-react";
 
+import { shareToFarcaster } from "@/lib/farcaster";
+
 import { Button } from "../ui/button";
 
 const SITE_URL = "https://ethboulderjournal.vercel.app";
@@ -104,10 +106,6 @@ export default function AddToMap() {
 
   const shareText = submittedText
     ? `${submittedText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph #onchaincreators`
-    : "";
-
-  const farcasterShareUrl = shareText
-    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL)}`
     : "";
 
   const xShareUrl = shareText
@@ -220,15 +218,13 @@ export default function AddToMap() {
           {feedback?.type === "success" && submittedText && (
             <div className="mt-4 flex items-center gap-3">
               <span className="text-xs text-[#64748B]">Share your insight:</span>
-              <a
-                href={farcasterShareUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => shareToFarcaster({ text: shareText, embedUrl: SITE_URL })}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#8A63D2]/10 border border-[#8A63D2]/20 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-xs font-medium"
               >
                 <Image src="/icons/farcaster.svg" alt="" width={14} height={14} className="brightness-0 invert opacity-70" style={{ filter: "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)" }} />
                 Farcaster
-              </a>
+              </button>
               <a
                 href={xShareUrl}
                 target="_blank"

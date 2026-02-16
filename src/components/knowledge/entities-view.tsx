@@ -105,7 +105,13 @@ export function EntitiesView({ entities, edges, onSelect }: EntitiesViewProps) {
                 <div className="flex justify-end mt-auto pt-1">
                   <CastButton
                     text={buildShareText(entity.name ?? "Entity", "entity")}
-                    embedUrl={buildEmbedUrl(entity.uuid)}
+                    embedUrl={buildEmbedUrl({
+                      uuid: entity.uuid,
+                      name: entity.name,
+                      type: "entity",
+                      summary: entity.summary || entity.content,
+                      connections: count,
+                    })}
                   />
                 </div>
               </button>

@@ -115,9 +115,31 @@ export function buildShareText(
 }
 
 /**
- * Build the embed URL for a knowledge graph item.
+ * Build a rich embed URL that shows dynamic OG/Farcaster previews.
+ * Uses /share/[id] which has per-entity metadata and a dynamic OG image.
  */
-export function buildEmbedUrl(uuid?: string): string {
+export function buildEmbedUrl(opts?: {
+  uuid?: string;
+  name?: string;
+  type?: "entity" | "episode";
+  summary?: string;
+  connections?: number;
+}): string {
+  if (!opts?.uuid) return `${SITE_URL}/knowledge`;
+
+  const params = new URLSearchParams();
+  if (opts.name) params.set("name", opts.name.slice(0, 100));
+  if (opts.type) params.set("type", opts.type);
+  if (opts.summary) params.set("summary", opts.summary.slice(0, 200));
+  if (opts.connections) params.set("connections", String(opts.connections));
+
+  return `${SITE_URL}/share/${opts.uuid}?${params.toString()}`;
+}
+
+/**
+ * Simple embed URL (just links to graph centered on a node).
+ */
+export function buildGraphUrl(uuid?: string): string {
   if (uuid) return `${SITE_URL}/graph?centerNode=${uuid}`;
   return `${SITE_URL}/knowledge`;
 }

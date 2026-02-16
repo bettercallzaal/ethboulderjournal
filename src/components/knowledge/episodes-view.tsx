@@ -107,7 +107,12 @@ export function EpisodesView({ episodes, onSelect }: EpisodesViewProps) {
                 <div className="mt-1.5 flex justify-end">
                   <CastButton
                     text={buildShareText(truncate(displayName, 200), "episode")}
-                    embedUrl={buildEmbedUrl(ep.uuid)}
+                    embedUrl={buildEmbedUrl({
+                      uuid: ep.uuid,
+                      name: displayName,
+                      type: "episode",
+                      summary: displayContent,
+                    })}
                   />
                 </div>
               </div>

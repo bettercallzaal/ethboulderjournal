@@ -22,6 +22,7 @@ import {
 import { siteCopy } from "@/content";
 import type { ChatResponse } from "@/types";
 import { apiClient } from "@/lib/api/client";
+import { shareToFarcaster } from "@/lib/farcaster";
 
 const SITE_URL = "https://ethboulderjournal.vercel.app";
 
@@ -207,9 +208,6 @@ export function JournalChatSection() {
 
   const shareText = generatedContent
     ? `${generatedContent.slice(0, 280)}\n\n#onchaincreators`
-    : "";
-  const farcasterUrl = shareText
-    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/journal")}`
     : "";
   const xUrl = shareText
     ? `https://x.com/intent/tweet?text=${encodeURIComponent(shareText.slice(0, 250))}&url=${encodeURIComponent(SITE_URL + "/journal")}`
@@ -437,10 +435,8 @@ export function JournalChatSection() {
             </a>
 
             {/* Farcaster */}
-            <a
-              href={farcasterUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => shareToFarcaster({ text: shareText, embedUrl: `${SITE_URL}/journal` })}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#8A63D2]/10 border border-[#8A63D2]/20 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[10px] font-medium"
             >
               <Image
@@ -454,7 +450,7 @@ export function JournalChatSection() {
                 }}
               />
               Farcaster
-            </a>
+            </button>
 
             {/* X */}
             <a

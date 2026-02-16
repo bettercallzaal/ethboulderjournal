@@ -13,7 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-const SITE_URL = "https://ethboulderjournal.vercel.app";
+import { shareToFarcaster } from "@/lib/farcaster";
 import {
   type JournalEntry,
   addJournalEntry,
@@ -126,14 +126,16 @@ export function JournalWriteSection({
     setEntries([]);
   };
 
-  const buildFarcasterUrl = (entryText: string) => {
-    const shareText = `${entryText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph #onchaincreators`;
-    return `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/journal")}`;
+  const handleCastEntry = (entryText: string) => {
+    shareToFarcaster({
+      text: `${entryText}\n\nAdded to the ZABAL x ETH Boulder knowledge graph #onchaincreators`,
+      embedUrl: "https://ethboulderjournal.vercel.app/journal",
+    });
   };
 
   const buildXUrl = (entryText: string) => {
     const shareText = `${entryText}\n\n#onchaincreators`;
-    return `https://x.com/intent/tweet?text=${encodeURIComponent(shareText.slice(0, 250))}&url=${encodeURIComponent(SITE_URL + "/journal")}`;
+    return `https://x.com/intent/tweet?text=${encodeURIComponent(shareText.slice(0, 250))}&url=${encodeURIComponent("https://ethboulderjournal.vercel.app/journal")}`;
   };
 
   return (
@@ -222,10 +224,8 @@ export function JournalWriteSection({
               <div className="flex items-center gap-2 mt-2">
                 <Share2 className="w-3 h-3 text-[#64748B]" />
                 <span className="text-[10px] text-[#64748B]">Share it:</span>
-                <a
-                  href={buildFarcasterUrl(lastEntry.text)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleCastEntry(lastEntry.text)}
                   className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#8A63D2]/10 border border-[#8A63D2]/20 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[10px] font-medium"
                 >
                   <Image
@@ -239,7 +239,7 @@ export function JournalWriteSection({
                     }}
                   />
                   Cast on Farcaster
-                </a>
+                </button>
                 <a
                   href={buildXUrl(lastEntry.text)}
                   target="_blank"
@@ -304,10 +304,11 @@ export function JournalWriteSection({
                   <div className="flex items-center gap-2">
                     {entry.status === "submitted" && (
                       <div className="flex items-center gap-1">
-                        <a
-                          href={buildFarcasterUrl(entry.text)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCastEntry(entry.text);
+                          }}
                           className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-[#8A63D2]/10 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[9px] font-medium"
                           title="Share on Farcaster"
                         >
@@ -322,7 +323,7 @@ export function JournalWriteSection({
                             }}
                           />
                           Cast
-                        </a>
+                        </button>
                         <a
                           href={buildXUrl(entry.text)}
                           target="_blank"

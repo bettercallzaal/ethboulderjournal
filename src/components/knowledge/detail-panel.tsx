@@ -77,12 +77,23 @@ export function DetailPanel({
         <CastButton
           size="md"
           text={buildShareText(node.name ?? "Item", item.type)}
-          embedUrl={buildEmbedUrl(node.uuid)}
+          embedUrl={buildEmbedUrl({
+            uuid: node.uuid,
+            name: node.name,
+            type: item.type,
+            summary: node.summary || node.content,
+            connections: nodeRelationships.length,
+          })}
         />
         <XShareButton
           size="md"
           text={buildShareText(node.name ?? "Item", item.type)}
-          url={buildEmbedUrl(node.uuid)}
+          url={buildEmbedUrl({
+            uuid: node.uuid,
+            name: node.name,
+            type: item.type,
+            summary: node.summary || node.content,
+          })}
         />
       </div>
 

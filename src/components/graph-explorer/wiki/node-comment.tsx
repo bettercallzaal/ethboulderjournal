@@ -6,6 +6,8 @@ import Image from "next/image";
 
 import { Loader2, MessageSquarePlus, CheckCircle, AlertCircle } from "lucide-react";
 
+import { shareToFarcaster } from "@/lib/farcaster";
+
 const SITE_URL = "https://ethboulderjournal.vercel.app";
 
 interface NodeCommentProps {
@@ -57,10 +59,6 @@ export function NodeComment({ nodeName, nodeId }: NodeCommentProps) {
 
   const shareText = submittedText
     ? `${submittedText}\n\nNote on "${nodeName}" — ZABAL x ETH Boulder #onchaincreators`
-    : "";
-
-  const farcasterUrl = shareText
-    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&embeds[]=${encodeURIComponent(SITE_URL + "/graph")}`
     : "";
 
   const xUrl = shareText
@@ -121,15 +119,13 @@ export function NodeComment({ nodeName, nodeId }: NodeCommentProps) {
       {feedback?.type === "success" && submittedText && (
         <div className="mt-2 flex items-center gap-2">
           <span className="text-[10px] text-[#64748B]">Share:</span>
-          <a
-            href={farcasterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => shareToFarcaster({ text: shareText, embedUrl: `${SITE_URL}/graph` })}
             className="flex items-center gap-1 px-2 py-1 rounded bg-[#8A63D2]/10 border border-[#8A63D2]/20 text-[#8A63D2] hover:bg-[#8A63D2]/20 transition-colors text-[10px] font-medium"
           >
             <Image src="/icons/farcaster.svg" alt="" width={10} height={10} style={{ filter: "brightness(0) saturate(100%) invert(45%) sepia(50%) saturate(1000%) hue-rotate(230deg)" }} />
             Farcaster
-          </a>
+          </button>
           <a
             href={xUrl}
             target="_blank"
