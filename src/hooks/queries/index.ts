@@ -102,3 +102,9 @@ export {
   useHTNTemplatesQuery,
   htnTemplatesQueryKey,
 } from "./useHTNTemplatesQuery";
+
+// Farcaster
+export {
+  useFarcasterFeed,
+  farcasterFeedQueryKey,
+} from "./useFarcasterFeed";

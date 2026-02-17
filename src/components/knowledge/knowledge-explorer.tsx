@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 
 import {
+  BarChart3,
   BookOpen,
   GitBranch,
   Loader2,
@@ -17,15 +18,17 @@ import {
 
 import { siteCopy } from "@/content";
 import { useKnowledgeData } from "@/hooks/queries/useKnowledgeData";
+import { useTaxonomyStatsQuery } from "@/hooks/queries/useTaxonomyStatsQuery";
 import type { GraphEdge, GraphNode } from "@/types/graph";
 
 import { EntitiesView } from "./entities-view";
 import { EpisodesView } from "./episodes-view";
 import { ConnectionsView } from "./connections-view";
 import { FeedView } from "./feed-view";
+import { AnalyticsView } from "./analytics-view";
 import { DetailPanel, type SelectedItem } from "./detail-panel";
 
-type Tab = "feed" | "entities" | "episodes" | "connections";
+type Tab = "feed" | "entities" | "episodes" | "connections" | "analytics";
 
 /** Names to match when finding ZABAL-related entities */
 const ZABAL_NAMES = ["zabal", "bettercallzaal", "zaal"];
@@ -83,11 +86,15 @@ export function KnowledgeExplorer() {
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
 
   const agentId = siteCopy.staticGraph.staticAgentId;
+  const bonfireId = siteCopy.staticGraph.staticBonfireId;
 
   const { data, isLoading, isError } = useKnowledgeData({
     agentId,
     limit: 75,
   });
+
+  const { data: taxonomyData, isLoading: taxonomyLoading } =
+    useTaxonomyStatsQuery(bonfireId);
 
   const entities = data?.entities ?? [];
   const episodes = data?.episodes ?? [];
@@ -267,7 +274,8 @@ export function KnowledgeExplorer() {
           { key: "entities" as Tab, label: "Entities", icon: Users, count: entities.length },
           { key: "episodes" as Tab, label: "Episodes", icon: Clock, count: episodes.length },
           { key: "connections" as Tab, label: "Connections", icon: GitBranch, count: edges.length },
-        ]).map((tab) => (
+          { key: "analytics" as Tab, label: "Analytics", icon: BarChart3, count: undefined },
+        ] as { key: Tab; label: string; icon: typeof Zap; count?: number }[]).map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
@@ -279,15 +287,17 @@ export function KnowledgeExplorer() {
           >
             <tab.icon className="w-3.5 h-3.5" />
             {tab.label}
-            <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                activeTab === tab.key
-                  ? "bg-[var(--brand-primary)]/20 text-[var(--brand-primary)]"
-                  : "bg-white/5 text-[#64748B]"
-              }`}
-            >
-              {tab.count}
-            </span>
+            {tab.count != null && (
+              <span
+                className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                  activeTab === tab.key
+                    ? "bg-[var(--brand-primary)]/20 text-[var(--brand-primary)]"
+                    : "bg-white/5 text-[#64748B]"
+                }`}
+              >
+                {tab.count}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -326,6 +336,16 @@ export function KnowledgeExplorer() {
               edges={edges}
               nodeMap={nodeMap}
               onSelectEntity={handleNavigateToEntity}
+            />
+          )}
+          {activeTab === "analytics" && (
+            <AnalyticsView
+              entities={entities}
+              episodes={episodes}
+              edges={edges}
+              nodeMap={nodeMap}
+              taxonomyStats={taxonomyData}
+              taxonomyLoading={taxonomyLoading}
             />
           )}
         </>

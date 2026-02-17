@@ -10,6 +10,7 @@ import HowItWorks from "./how-it-works";
 import HyperBlogsPreview from "./hyperblogs-preview";
 import KnowledgeGraph from "./knowledge-graph";
 import PeopleSection from "./people-section";
+import SocialFeedSection from "./social-feed-section";
 
 /**
  * Landing page for bonfire subdomains (e.g. bonfire1.app.bonfires.ai).
@@ -30,6 +31,7 @@ export default function BonfireLanding() {
       <Hero staticGraph={staticGraph} />
       <AddToMap />
       <PeopleSection />
+      <SocialFeedSection />
       <KnowledgeGraph />
       <HyperBlogsPreview bonfireId={subdomainConfig?.bonfireId} />
       <HowItWorks />

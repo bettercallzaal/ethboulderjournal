@@ -5,4 +5,5 @@ export { ConnectionsView } from "./connections-view";
 export { FeedView } from "./feed-view";
 export { DetailPanel } from "./detail-panel";
 export type { SelectedItem } from "./detail-panel";
+export { AnalyticsView } from "./analytics-view";
 export { CastButton, XShareButton } from "./share-button";

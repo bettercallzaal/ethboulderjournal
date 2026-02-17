@@ -5,3 +5,4 @@ export { default as Footer } from "./footer";
 export { default as HyperBlogsPreview } from "./hyperblogs-preview";
 export { default as BonfireLanding } from "./bonfire-landing";
 export { default as RootLanding } from "./root-landing";
+export { default as SocialFeedSection } from "./social-feed-section";
