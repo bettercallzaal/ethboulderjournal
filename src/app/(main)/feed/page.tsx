@@ -1,127 +1,142 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ExternalLink, Heart, Repeat2, MessageCircle, Share } from "lucide-react";
 
-interface FarcasterCast {
+interface Cast {
   hash: string;
   author: {
     username: string;
     displayName: string;
-    pfp: string;
-    fid: number;
+    pfpUrl: string;
   };
   text: string;
   timestamp: string;
-  likes?: number;
-  recasts?: number;
-  replies?: number;
+  likeCount: number;
+  recastCount: number;
+  replyCount: number;
+  embedsCount?: number;
+  embeds?: Array<{
+    castId?: { hash: string };
+    url?: string;
+  }>;
 }
 
-export default function FarcasterFeedPage() {
-  const [mounted, setMounted] = useState(false);
+export default function FeedPage() {
+  const [casts, setCasts] = useState<Cast[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    const fetchFeed = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/farcaster/feed");
+        if (!response.ok) throw new Error("Failed to fetch feed");
+        const data = await response.json();
+        setCasts(data.casts || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeed();
+    const interval = setInterval(fetchFeed, 30000); // Refresh every 30s
+    return () => clearInterval(interval);
   }, []);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['farcaster-feed'],
-    queryFn: async () => {
-      const res = await fetch('/api/farcaster/feed');
-      if (!res.ok) throw new Error('Failed to fetch feed');
-      return res.json();
-    },
-    enabled: mounted,
-  });
-
-  const casts = data?.casts || [];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-      {/* Header */}
-      <div className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-700 px-4 py-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            🎯 Farcaster Feed
-          </h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Live updates from ZABAL, ETH Boulder & Creator Community
-          </p>
+  if (loading && casts.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-slate-300">Loading feed...</p>
         </div>
       </div>
+    );
+  }
 
-      {/* Content */}
-      <div className="p-4 md:p-6">
-        <div className="max-w-4xl mx-auto space-y-4">
-          {isLoading ? (
-            <div className="flex justify-center py-12">
-              <div className="text-slate-400">Loading casts...</div>
-            </div>
-          ) : error ? (
-            <div className="p-6 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
-              Failed to load feed. Please try again.
-            </div>
-          ) : casts.length === 0 ? (
-            <div className="p-6 bg-slate-800 border border-slate-700 rounded-lg text-center text-slate-400">
-              No casts found yet. Check back soon!
-            </div>
-          ) : (
-            casts.map((cast: FarcasterCast) => (
-              <a
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-black p-4 md:p-8">
+      <div className="max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">🔥 ETH Boulder Live Feed</h1>
+          <p className="text-slate-400">Latest conversations from the community</p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-300">
+            {error}
+          </div>
+        )}
+
+        {casts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-slate-400">No casts found. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {casts.map((cast) => (
+              <div
                 key={cast.hash}
-                href={`https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 8)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block p-4 rounded-lg bg-slate-800 border border-slate-700 hover:border-blue-500 hover:bg-slate-750 transition"
+                className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50 rounded-lg p-4 hover:border-slate-600 transition-all"
               >
-                <div className="flex gap-3">
-                  {/* Avatar */}
+                {/* Author */}
+                <div className="flex items-center gap-3 mb-3">
                   <img
-                    src={cast.author.pfp || '/default-avatar.png'}
+                    src={cast.author.pfpUrl}
                     alt={cast.author.username}
-                    className="w-12 h-12 rounded-full bg-slate-700"
+                    className="w-10 h-10 rounded-full"
                   />
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-bold text-white">
-                          {cast.author.displayName || cast.author.username}
-                        </div>
-                        <div className="text-sm text-slate-400">
-                          @{cast.author.username}
-                        </div>
-                      </div>
-                      <div className="text-xs text-slate-500">
-                        {new Date(cast.timestamp).toLocaleDateString()}
-                      </div>
-                    </div>
-
-                    {/* Cast Text */}
-                    <p className="mt-3 text-slate-200 leading-relaxed whitespace-pre-wrap break-words">
-                      {cast.text}
-                    </p>
-
-                    {/* Stats */}
-                    <div className="mt-3 flex gap-4 text-xs text-slate-500">
-                      {cast.replies !== undefined && (
-                        <span>💬 {cast.replies}</span>
-                      )}
-                      {cast.recasts !== undefined && (
-                        <span>🔄 {cast.recasts}</span>
-                      )}
-                      {cast.likes !== undefined && (
-                        <span>❤️ {cast.likes}</span>
-                      )}
-                    </div>
+                  <div>
+                    <p className="font-semibold text-white">{cast.author.displayName}</p>
+                    <p className="text-xs text-slate-400">@{cast.author.username}</p>
                   </div>
                 </div>
-              </a>
-            ))
-          )}
-        </div>
+
+                {/* Text */}
+                <p className="text-slate-200 mb-3 text-sm leading-relaxed">{cast.text}</p>
+
+                {/* Embeds */}
+                {cast.embeds && cast.embeds.length > 0 && (
+                  <div className="mb-3 text-xs text-slate-400">
+                    📎 {cast.embeds.length} attachment{cast.embeds.length > 1 ? "s" : ""}
+                  </div>
+                )}
+
+                {/* Timestamp & Stats */}
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-700/50">
+                  <span>{new Date(cast.timestamp).toLocaleDateString()}</span>
+                  <div className="flex gap-4">
+                    <span className="flex items-center gap-1">
+                      <Heart className="w-3 h-3" /> {cast.likeCount}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Repeat2 className="w-3 h-3" /> {cast.recastCount}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageCircle className="w-3 h-3" /> {cast.replyCount}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action */}
+                <Link
+                  href={`https://warpcast.com/${cast.author.username}/${cast.hash.slice(0, 8)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-2 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  View on Warpcast <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
