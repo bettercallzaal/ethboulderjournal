@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Zap, Share2, BookOpen, Sparkles, Code, Users, Lightbulb, Settings, TrendingUp, Github, Network } from "lucide-react";
 
@@ -123,7 +124,7 @@ const ICON_MAP = {
 };
 
 export function NavigationHub() {
-  const [filter, setFilter] = React.useState("All");
+  const [filter, setFilter] = useState("All");
   const filteredFeatures = filter === "All" ? FEATURES : FEATURES.filter((f) => f.category === filter);
 
   return (
@@ -136,7 +137,7 @@ export function NavigationHub() {
         {/* Quick Access Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
           {QUICK_ACCESS.map((feature) => {
-            const Icon = ICON_MAP[feature.icon] || Zap;
+            const Icon = ICON_MAP[feature.icon as keyof typeof ICON_MAP] || Zap;
             return (
               <Link
                 key={feature.id}
@@ -181,7 +182,7 @@ export function NavigationHub() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {filteredFeatures.map((feature) => {
-            const Icon = ICON_MAP[feature.icon] || Zap;
+            const Icon = ICON_MAP[feature.icon as keyof typeof ICON_MAP] || Zap;
             return (
               <Link
                 key={feature.id}
