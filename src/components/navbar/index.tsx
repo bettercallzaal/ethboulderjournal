@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import type { NavigationItem } from "@/config/sites";
 import { useSiteConfig } from "@/contexts";
 
+import { BonfireToggle } from "./bonfire-toggle";
 import ConnectWallet from "./connect-wallet";
 import Drawer from "./drawer";
 import { NavbarButton } from "./navbar-button";
@@ -54,7 +55,10 @@ export function Navbar() {
         />
       </Link>
 
-      {/* Desktop: center nav buttons */}
+      {/* Desktop: bonfire toggle + center nav buttons */}
+      <div className="hidden lg:flex items-center ml-4">
+        <BonfireToggle />
+      </div>
       <div className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-2">
         {navigationItems.map((item) => (
           <NavbarButton

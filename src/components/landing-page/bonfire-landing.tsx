@@ -1,7 +1,6 @@
 "use client";
 
-import { siteCopy } from "@/content";
-import { useSubdomainBonfire } from "@/contexts";
+import { useSubdomainBonfire, useBonfireSelection } from "@/contexts";
 
 import AddToMap from "./add-to-map";
 import Footer from "./footer";
@@ -18,13 +17,17 @@ import SocialFeedSection from "./social-feed-section";
  */
 export default function BonfireLanding() {
   const { subdomainConfig, isSubdomainScoped } = useSubdomainBonfire();
+  const { active: activeBonfire } = useBonfireSelection();
   const staticGraph =
     isSubdomainScoped && subdomainConfig && subdomainConfig.agentId
       ? {
         staticBonfireId: subdomainConfig.bonfireId,
         staticAgentId: subdomainConfig.agentId,
       }
-      : siteCopy.staticGraph;
+      : {
+        staticBonfireId: activeBonfire.bonfireId,
+        staticAgentId: activeBonfire.agentId,
+      };
 
   return (
     <main className="overflow-x-hidden max-w-screen-2xl mx-auto">

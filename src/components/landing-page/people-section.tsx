@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Flame, Loader2, Users } from "lucide-react";
 
-import { siteCopy } from "@/content";
+import { useBonfireSelection } from "@/contexts/BonfireSelectionContext";
 import { peopleSectionCopy } from "@/content/landing-page";
 import { useKnowledgeData } from "@/hooks/queries/useKnowledgeData";
 import type { GraphNode } from "@/types/graph";
@@ -20,7 +20,8 @@ function isZabalRelated(node: GraphNode): boolean {
 
 export default function PeopleSection() {
   const { title, subtitle, description, cta, ctaHref } = peopleSectionCopy;
-  const agentId = siteCopy.staticGraph.staticAgentId;
+  const { active: activeBonfire } = useBonfireSelection();
+  const agentId = activeBonfire.agentId;
 
   const { data, isLoading } = useKnowledgeData({ agentId, limit: 50 });
 

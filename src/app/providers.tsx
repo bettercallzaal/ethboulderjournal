@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 
-import { QueryProvider } from "@/contexts";
+import { QueryProvider, BonfireSelectionProvider } from "@/contexts";
 
 import { ToastProvider } from "@/components/common";
 
@@ -35,10 +35,12 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <QueryProvider>
-      <Web3Provider>
-        {children}
-        <ToastProvider />
-      </Web3Provider>
+      <BonfireSelectionProvider>
+        <Web3Provider>
+          {children}
+          <ToastProvider />
+        </Web3Provider>
+      </BonfireSelectionProvider>
     </QueryProvider>
   );
 }

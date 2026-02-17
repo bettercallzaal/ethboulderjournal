@@ -8,3 +8,8 @@ export {
   type SubdomainConfig,
 } from "./SubdomainBonfireContext";
 export { SiteConfigProvider, useSiteConfig } from "./SiteConfigContext";
+export {
+  BonfireSelectionProvider,
+  useBonfireSelection,
+  type BonfireOption,
+} from "./BonfireSelectionContext";

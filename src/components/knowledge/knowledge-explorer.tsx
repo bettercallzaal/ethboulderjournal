@@ -16,7 +16,7 @@ import {
   Zap,
 } from "lucide-react";
 
-import { siteCopy } from "@/content";
+import { useBonfireSelection } from "@/contexts/BonfireSelectionContext";
 import { useKnowledgeData } from "@/hooks/queries/useKnowledgeData";
 import { useTaxonomyStatsQuery } from "@/hooks/queries/useTaxonomyStatsQuery";
 import type { GraphEdge, GraphNode } from "@/types/graph";
@@ -85,8 +85,9 @@ export function KnowledgeExplorer() {
   const [activeTab, setActiveTab] = useState<Tab>("feed");
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
 
-  const agentId = siteCopy.staticGraph.staticAgentId;
-  const bonfireId = siteCopy.staticGraph.staticBonfireId;
+  const { active: activeBonfire } = useBonfireSelection();
+  const agentId = activeBonfire.agentId;
+  const bonfireId = activeBonfire.bonfireId;
 
   const { data, isLoading, isError } = useKnowledgeData({
     agentId,
