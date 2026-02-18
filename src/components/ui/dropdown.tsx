@@ -31,20 +31,9 @@ export default function Dropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const menuClasses = cn(
-    "dropdown-content z-100 mt-1 list-none rounded-b-lg rounded-t-none bg-brand-black shadow-lg border border-[#3B1517]",
-    placement === "start" && "dropdown-start",
-    placement === "end" && "dropdown-end",
-    placement === "center" && "dropdown-center"
-  );
-
   return (
     <div
-      className={cn(
-        "relative inline-block dropdown",
-        open && "dropdown-open",
-        menuClasses
-      )}
+      className={cn("relative inline-block", open && "dropdown-open")}
       ref={containerRef}
     >
       {trigger(open, () => setOpen(true))}
@@ -56,7 +45,10 @@ export default function Dropdown({
           aria-labelledby="navbar-dropdown-trigger"
           onMouseDown={(e) => e.stopPropagation()}
           className={cn(
-            "dropdown-content z-100 mt-1 list-none rounded-b-lg rounded-t-none bg-brand-black shadow-lg border border-[#3B1517]",
+            "absolute z-100 mt-1 list-none rounded-lg bg-brand-black shadow-lg border border-[#3B1517]",
+            placement === "start" && "left-0",
+            placement === "end" && "right-0",
+            placement === "center" && "left-1/2 -translate-x-1/2",
             className
           )}
         >

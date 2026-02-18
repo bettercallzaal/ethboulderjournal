@@ -8,7 +8,13 @@ import type { SiteConfig } from "./types";
 export const defaultSiteConfig: SiteConfig = {
   navigation: [
     { label: "Home", href: "/" },
-    { label: "Graph", href: "/graph" },
+    {
+      label: "Graph",
+      dropdownItems: [
+        { label: "ZABAL Graph", href: "/graph" },
+        { label: "ETH Boulder Graph", href: "/graph" },
+      ],
+    },
     { label: "Knowledge", href: "/knowledge" },
     { label: "Journal", href: "/journal" },
     { label: "Hyperblogs", href: "/hyperblogs" },

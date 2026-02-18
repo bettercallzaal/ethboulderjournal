@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,6 @@ import { usePathname } from "next/navigation";
 import type { NavigationItem } from "@/config/sites";
 import { useSiteConfig } from "@/contexts";
 
-import { BonfireToggle } from "./bonfire-toggle";
 import ConnectWallet from "./connect-wallet";
 import Drawer from "./drawer";
 import { NavbarButton } from "./navbar-button";
@@ -31,10 +30,15 @@ export function Navbar() {
     const segment = pathname.split("/")[1];
     if (!segment)
       return navigationItems[0] ?? { label: "Home", dropdownItems: [] };
-    const matched = navigationItems.find(
-      (item) =>
-        item.href?.startsWith("/") && item.href.split("/")[1] === segment
-    );
+    const matched = navigationItems.find((item) => {
+      // Match direct href
+      if (item.href?.startsWith("/") && item.href.split("/")[1] === segment)
+        return true;
+      // Match dropdown items
+      if (item.dropdownItems?.some((sub) => sub.href.split("/")[1] === segment))
+        return true;
+      return false;
+    });
     return (
       matched ?? navigationItems[0] ?? { label: "Home", dropdownItems: [] }
     );
@@ -43,7 +47,7 @@ export function Navbar() {
   const closeDrawer = () => setDrawerOpen(false);
 
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between w-full bg-brand-black px-8 lg:px-20 min-h-16 lg:min-h-20">
+    <nav className="sticky top-0 z-50 flex items-center w-full bg-brand-black px-8 lg:px-20 min-h-16 lg:min-h-20">
       <Link href="/" className="flex items-center shrink-0" aria-label="Home">
         <Image
           src="/logo-white.svg"
@@ -55,11 +59,8 @@ export function Navbar() {
         />
       </Link>
 
-      {/* Desktop: bonfire toggle + center nav buttons */}
-      <div className="hidden lg:flex items-center ml-4">
-        <BonfireToggle />
-      </div>
-      <div className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-2">
+      {/* Desktop: center nav links */}
+      <div className="hidden lg:flex items-center gap-1 mx-auto">
         {navigationItems.map((item) => (
           <NavbarButton
             key={item.label}
