@@ -1,10 +1,5 @@
-import { ComingSoon } from "@/components/shared/ComingSoon";
+import { redirect } from "next/navigation";
 
 export default function AIBuilderPage() {
-  return (
-    <ComingSoon
-      title="AI Builder"
-      description="Generate content with AI using the ZABAL knowledge graph. Coming soon."
-    />
-  );
+  redirect("/journal");
 }

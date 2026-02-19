@@ -1,10 +1,5 @@
-import { ComingSoon } from "@/components/shared/ComingSoon";
+import { redirect } from "next/navigation";
 
 export default function LiveFeedPage() {
-  return (
-    <ComingSoon
-      title="Live Feed"
-      description="Real-time ETH Boulder casts and updates. Coming soon."
-    />
-  );
+  redirect("/knowledge");
 }

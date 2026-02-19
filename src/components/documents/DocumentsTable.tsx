@@ -254,8 +254,7 @@ export function DocumentsTable({
   }, []);
 
   const handleCopyId = useCallback((id: string) => {
-    // Could show a toast notification here
-    console.log("Copied ID:", id);
+    navigator.clipboard.writeText(id).catch(() => {});
   }, []);
 
   // Loading skeleton

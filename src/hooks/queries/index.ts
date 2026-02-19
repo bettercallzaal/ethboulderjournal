@@ -30,12 +30,6 @@ export {
   graphQueryKey,
 } from "./useGraphQuery";
 
-// Latest episodes graph (graph-2)
-export {
-  useLatestEpisodesGraph,
-  latestEpisodesGraphQueryKey,
-} from "./useLatestEpisodesGraph";
-
 // Data Rooms
 export {
   useDataRoomsQuery,

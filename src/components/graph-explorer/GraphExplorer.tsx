@@ -18,7 +18,6 @@ import {
   PanelActionType,
   SelectionActionType,
   useAgentSelection,
-  useBonfiresQuery,
   useGraphExpand,
   useGraphExplorerState,
   useGraphQuery,
@@ -40,6 +39,13 @@ import { ErrorMessage, LoadingSpinner, toast } from "@/components/common";
 import { apiClient } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import { synthesizeEpisodicEdges } from "@/lib/utils/graph-utils";
+import {
+  asRecord,
+  normalizeEdge,
+  normalizeNode,
+  normalizeNodeId,
+  resolveNodeType,
+} from "@/lib/utils/graph-normalizers";
 import type { GraphElement } from "@/lib/utils/sigma-adapter";
 import { useWalletAccount } from "@/lib/wallet/e2e";
 
@@ -63,95 +69,6 @@ import {
  * GraphExplorer Component
  * Main orchestrating component for graph visualization, wiki, chat, and timeline features
  */
-
-function resolveNodeType(rawType: unknown, labels: string[]): NodeType {
-  const normalized = typeof rawType === "string" ? rawType.toLowerCase() : "";
-  if (normalized.includes("episode")) return "episode";
-  if (normalized.includes("entity")) return "entity";
-  const hasEpisodeLabel = labels.some(
-    (label) => label.toLowerCase() === "episode"
-  );
-  return hasEpisodeLabel ? "episode" : "entity";
-}
-
-function buildProperties(
-  raw: Record<string, unknown>
-): Record<string, unknown> {
-  const base = { ...raw };
-  if (raw["properties"] && typeof raw["properties"] === "object") {
-    Object.assign(base, raw["properties"] as Record<string, unknown>);
-  }
-  return base;
-}
-
-function normalizeNode(raw: Record<string, unknown>): GraphNode | null {
-  const rawUuid = String(
-    raw["uuid"] ?? raw["id"] ?? raw["node_uuid"] ?? raw["nodeId"] ?? ""
-  );
-  const uuid = rawUuid.replace(/^n:/, "");
-  if (!uuid) return null;
-
-  const labels = Array.isArray(raw["labels"])
-    ? raw["labels"].filter(
-        (label): label is string => typeof label === "string"
-      )
-    : [];
-
-  const nameCandidate =
-    raw["name"] ?? raw["label"] ?? raw["title"] ?? raw["summary"] ?? uuid;
-  const type = resolveNodeType(
-    raw["type"] ?? raw["node_type"] ?? raw["entity_type"],
-    labels
-  );
-
-  return {
-    uuid,
-    name: String(nameCandidate),
-    type,
-    labels,
-    properties: buildProperties(raw),
-  };
-}
-
-function normalizeNodeId(value: unknown): string {
-  return String(value ?? "").replace(/^n:/, "");
-}
-
-function normalizeEdge(raw: Record<string, unknown>): GraphEdge | null {
-  const sourceValue =
-    raw["source"] ??
-    raw["source_uuid"] ??
-    raw["source_node_uuid"] ??
-    raw["from_uuid"] ??
-    raw["from"];
-  const targetValue =
-    raw["target"] ??
-    raw["target_uuid"] ??
-    raw["target_node_uuid"] ??
-    raw["to_uuid"] ??
-    raw["to"];
-
-  if (!sourceValue || !targetValue) return null;
-
-  const type = String(
-    raw["type"] ??
-      raw["relationship"] ??
-      raw["relationship_type"] ??
-      raw["label"] ??
-      "related_to"
-  );
-
-  return {
-    source: normalizeNodeId(sourceValue),
-    target: normalizeNodeId(targetValue),
-    type,
-    properties: buildProperties(raw),
-  };
-}
-
-function asRecord(value: unknown): Record<string, unknown> {
-  return value as Record<string, unknown>;
-}
 
 function buildGraphStatePayload(
   elements: GraphElement[],
@@ -310,8 +227,7 @@ export function GraphExplorer({
   className,
 }: GraphExplorerProps) {
   const searchParams = useSearchParams();
-  const { address: walletAddress, isConnected: isWalletConnected } =
-    useWalletAccount();
+  const { isConnected: isWalletConnected } = useWalletAccount();
 
   // When staticGraph is provided, ignore URL and initial props; otherwise use URL/initial
   const effectiveBonfireId = staticGraph

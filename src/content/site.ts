@@ -27,8 +27,10 @@ export const siteCopy = {
   warpcastUrl: "https://warpcast.com/bettercallzaal",
   discordUrl: "https://discord.gg/bonfiresai",
   staticGraph: {
-    staticBonfireId: "698b70002849d936f4259848",
-    staticAgentId: "698b70742849d936f4259849",
+    staticBonfireId:
+      process.env["NEXT_PUBLIC_BONFIRE_ID"] ?? "698b70002849d936f4259848",
+    staticAgentId:
+      process.env["NEXT_PUBLIC_AGENT_ID"] ?? "698b70742849d936f4259849",
   },
   docsUrl: "https://docs.bonfires.ai/bonfires/docs/files/Welcome",
 } as const;

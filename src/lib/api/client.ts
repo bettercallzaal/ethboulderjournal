@@ -277,7 +277,7 @@ class ApiClient {
     } catch (error) {
       clearTimeout(timeoutId);
 
-      console.log("error api", error);
+      console.error("[API Client] Request failed:", error);
 
       // Retry on network/timeout errors
       if (error instanceof Error && retryCount < MAX_RETRIES) {

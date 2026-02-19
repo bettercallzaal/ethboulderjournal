@@ -17,7 +17,15 @@ export const defaultSiteConfig: SiteConfig = {
     },
     { label: "Knowledge", href: "/knowledge" },
     { label: "Journal", href: "/journal" },
-    { label: "Hyperblogs", href: "/hyperblogs" },
+    {
+      label: "More",
+      dropdownItems: [
+        { label: "Hyperblogs", href: "/hyperblogs" },
+        { label: "Documents", href: "/documents" },
+        { label: "Data Rooms", href: "/datarooms" },
+        { label: "Dashboard", href: "/dashboard" },
+      ],
+    },
   ],
 
   theme: {

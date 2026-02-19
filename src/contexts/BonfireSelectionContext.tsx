@@ -28,8 +28,10 @@ const BONFIRE_OPTIONS: BonfireOption[] = [
   {
     id: "zabal",
     label: "ZABAL",
-    bonfireId: "698b70002849d936f4259848",
-    agentId: "698b70742849d936f4259849",
+    bonfireId:
+      process.env["NEXT_PUBLIC_BONFIRE_ID"] ?? "698b70002849d936f4259848",
+    agentId:
+      process.env["NEXT_PUBLIC_AGENT_ID"] ?? "698b70742849d936f4259849",
     color: "#ff6b2b",
   },
 ];

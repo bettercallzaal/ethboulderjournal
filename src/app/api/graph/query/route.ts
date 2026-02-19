@@ -72,6 +72,12 @@ export async function POST(request: NextRequest) {
     num_results: body.num_results ?? 10,
     center_node_uuid: body.center_node_uuid,
     graph_id: body.graph_id,
+    search_recipe: body.search_recipe,
+    min_fact_rating: body.min_fact_rating,
+    mmr_lambda: body.mmr_lambda,
+    window_start: body.window_start,
+    window_end: body.window_end,
+    relationship_types: body.relationship_types,
   };
 
   return handleProxyRequest("/delve", {

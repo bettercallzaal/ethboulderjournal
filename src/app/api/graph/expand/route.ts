@@ -14,6 +14,15 @@ import type {
   GraphExpandRequest,
 } from "@/types";
 
+interface ExpandRequestWithAdvanced extends GraphExpandRequest {
+  search_recipe?: string;
+  min_fact_rating?: number;
+  mmr_lambda?: number;
+  window_start?: string;
+  window_end?: string;
+  relationship_types?: string[];
+}
+
 import {
   checkBonfireAccess,
   createAccessDeniedResponse,
@@ -40,7 +49,7 @@ import {
  */
 export async function POST(request: NextRequest) {
   const { data: body, error } =
-    await parseJsonBody<Partial<GraphExpandRequest>>(request);
+    await parseJsonBody<Partial<ExpandRequestWithAdvanced>>(request);
 
   if (error) {
     return createErrorResponse(error, 400);
@@ -75,9 +84,15 @@ export async function POST(request: NextRequest) {
 
   const expandRequest: DelveRequest = {
     query: "",
-    bonfire_id: body.bonfire_id,
+    bonfire_id: body.bonfire_id!,
     center_node_uuid: body.node_uuid,
     num_results: body.limit ?? 50,
+    search_recipe: body.search_recipe,
+    min_fact_rating: body.min_fact_rating,
+    mmr_lambda: body.mmr_lambda,
+    window_start: body.window_start,
+    window_end: body.window_end,
+    relationship_types: body.relationship_types,
   };
 
   return handleProxyRequest("/delve", {

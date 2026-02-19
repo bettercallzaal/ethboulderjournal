@@ -1,7 +1,8 @@
 /**
  * Single Document API Route
  *
- * GET /api/documents/[docId] - Get document/entity details
+ * GET    /api/documents/[docId] - Get document/entity details
+ * DELETE /api/documents/[docId] - Delete a document/entity
  */
 import { NextRequest } from "next/server";
 
@@ -38,6 +39,23 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     queryParams: queryParams["bonfire_id"]
       ? { bonfire_id: queryParams["bonfire_id"] }
       : undefined,
+  });
+}
+
+/**
+ * DELETE /api/documents/[docId]
+ *
+ * Delete a document/entity by UUID.
+ */
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { docId } = await params;
+
+  if (!docId) {
+    return createErrorResponse("Document ID is required", 400);
+  }
+
+  return handleProxyRequest(`/knowledge_graph/entity/${docId}`, {
+    method: "DELETE",
   });
 }
 

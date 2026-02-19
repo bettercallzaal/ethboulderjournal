@@ -3,91 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 import type { AgentLatestEpisodesResponse } from "@/types";
-import type { GraphEdge, GraphNode, NodeType } from "@/types/graph";
+import type { GraphEdge, GraphNode } from "@/types/graph";
 import { apiClient } from "@/lib/api/client";
-
-/* ── Normalization (mirrors useLatestEpisodesGraph) ── */
-
-function resolveNodeType(rawType: unknown, labels: string[]): NodeType {
-  const normalized = typeof rawType === "string" ? rawType.toLowerCase() : "";
-  if (normalized.includes("episode")) return "episode";
-  if (normalized.includes("entity")) return "entity";
-  const hasEpisodeLabel = labels.some((l) => l.toLowerCase() === "episode");
-  return hasEpisodeLabel ? "episode" : "entity";
-}
-
-function buildProperties(
-  raw: Record<string, unknown>,
-): Record<string, unknown> {
-  const base = { ...raw };
-  if (raw["properties"] && typeof raw["properties"] === "object") {
-    Object.assign(base, raw["properties"] as Record<string, unknown>);
-  }
-  return base;
-}
-
-function normalizeNode(raw: Record<string, unknown>): GraphNode | null {
-  const rawUuid = String(
-    raw["uuid"] ?? raw["id"] ?? raw["node_uuid"] ?? raw["nodeId"] ?? "",
-  );
-  const uuid = rawUuid.replace(/^n:/, "");
-  if (!uuid) return null;
-
-  const labels = Array.isArray(raw["labels"])
-    ? raw["labels"].filter((l): l is string => typeof l === "string")
-    : [];
-
-  const nameCandidate =
-    raw["name"] ?? raw["label"] ?? raw["title"] ?? raw["summary"] ?? uuid;
-  const type = resolveNodeType(
-    raw["type"] ?? raw["node_type"] ?? raw["entity_type"],
-    labels,
-  );
-
-  return {
-    uuid,
-    name: String(nameCandidate),
-    type,
-    labels,
-    summary: raw["summary"] as string | undefined,
-    content: raw["content"] as string | undefined,
-    valid_at: raw["valid_at"] as string | undefined,
-    properties: buildProperties(raw),
-  };
-}
-
-function normalizeEdge(raw: Record<string, unknown>): GraphEdge | null {
-  const sourceValue =
-    raw["source"] ??
-    raw["source_uuid"] ??
-    raw["source_node_uuid"] ??
-    raw["from_uuid"] ??
-    raw["from"];
-  const targetValue =
-    raw["target"] ??
-    raw["target_uuid"] ??
-    raw["target_node_uuid"] ??
-    raw["to_uuid"] ??
-    raw["to"];
-
-  if (!sourceValue || !targetValue) return null;
-
-  const type = String(
-    raw["type"] ??
-      raw["relationship"] ??
-      raw["relationship_type"] ??
-      raw["label"] ??
-      "related_to",
-  );
-
-  return {
-    source: String(sourceValue).replace(/^n:/, ""),
-    target: String(targetValue).replace(/^n:/, ""),
-    type,
-    fact: raw["fact"] as string | undefined,
-    properties: buildProperties(raw),
-  };
-}
+import { normalizeNode, normalizeEdge } from "@/lib/utils/graph-normalizers";
 
 /* ── Return type ── */
 

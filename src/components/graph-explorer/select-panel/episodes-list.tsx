@@ -1,5 +1,5 @@
 import { SkeletonLoader } from "@/components/common";
-import { EpisodeTimelineItem } from "@/components/graph/Timeline";
+import type { EpisodeTimelineItem } from "./panel-types";
 
 import { cn } from "@/lib/cn";
 

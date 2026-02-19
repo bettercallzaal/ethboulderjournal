@@ -4,7 +4,7 @@ import { Suspense, useMemo } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { NodeData } from "@/components";
+import type { NodeData } from "@/components/graph-explorer/NodeContextMenu";
 import { useSubdomainBonfire, useBonfireSelection } from "@/contexts";
 
 import { GraphExplorer } from "@/components/graph-explorer/GraphExplorer";
